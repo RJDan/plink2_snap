@@ -1,0 +1,57 @@
+name: rjd-plink2 # you probably want to 'snapcraft register <name>'
+title: plink2 # you probably want to 'snapcraft register <name>'
+version: 'alpha5.9-amd-avx2' # just for humans, typically '1.2+git' or '1.3.2'
+summary:  Utility for genomics.  # 79 char long summary
+description: |
+        "Utility for genomics"
+        * The description above refers to the software: https://www.cog-genomics.org/plink/2.0/
+        * I have packaged the software as a snap for **personal use** but I have made the snap available for free.
+        * I do not maintain the software itself. I only maintain the snap packaging. Please report software bugs to the maintainers.
+        * Report snap-specific bugs to me.
+        * I _DO_ use this snap. It _HAS BEEN tested_ on my system. I __do not__ track the latest version.
+        * __This snap works.__
+        * Packaging 'style' : Binary for linux AMD machines. Should run on Intel too.
+        * License refers to the original software, not the snapcraft 'code'.
+        * More info:
+        * Run the following to rename the snap  ```sudo snap alias rjd-plink2.plink2 plink2```
+        * Full license details: https://mathgen.stats.ox.ac.uk/genetics_software/plink2/LICENCE
+
+website: https://github.com/RJDan/plink2_snap
+source-code : https://github.com/RJDan/plink2_snap
+contact : https://github.com/RJDan/plink2_snap
+#icon: Rlogo.png
+
+base: core20
+grade: stable # stable, devel
+confinement: strict # strict, devmode, classic
+license:  GPL-3.0-only
+architectures:
+      - amd64
+
+apps:
+    plink2:
+        command: bin/plink2
+        plugs:
+          - home
+          - removable-media
+
+parts:
+    plink2:
+        plugin: nil
+        build-packages:
+               - wget
+               - tree
+               - unzip
+        override-pull: |
+                wget https://s3.amazonaws.com/plink2-assets/alpha5/plink2_linux_amd_avx2_20231212.zip
+                unzip plink2_linux_amd_avx2_20231212.zip
+                snapcraftctl pull
+        override-build: |
+                mv plink2 $SNAPCRAFT_PART_INSTALL/
+                snapcraftctl build
+        organize:
+            plink2 : bin/plink2
+        stage:
+            - bin
+        prime:
+            - bin
